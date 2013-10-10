@@ -62,3 +62,24 @@
     (testing "Checks behaviour when someone cuts"
       (is (true? (better-than? t3 h7)))
       (is (false? (better-than? h3 t3))))))
+
+(deftest test-value
+  (testing "Checks that value of cards is correct"
+    (is (= 0.5 (value-of {:rank 3 :colour :heart})))
+    (is (= 1.5 (value-of {:rank 11 :colour :diamond})))
+    (is (= 4.5 (value-of {:rank 14 :colour :heart})))
+    (is (= 0.5 (value-of {:rank 12 :colour :trump})))
+    (is (= 4.5 (value-of {:rank 0 :colour :trump})))))
+
+(deftest test-total-value
+  (testing "Checks that total value of cards is correct"
+    (is (= 10.0
+           (total-value [{:rank 3 :colour :heart}
+                         {:rank 21 :colour :trump}
+                         {:rank 14 :colour :diamond}
+                         {:rank 2 :colour :diamond}])))))
+
+(deftest test-gen-cards
+  (testing "Checks that there are 78 unique cards"
+    (is (= 78 (count (gen-cards))))
+    (is (= 78 (count (into #{} (gen-cards)))))))

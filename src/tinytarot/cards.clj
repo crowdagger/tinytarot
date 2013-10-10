@@ -59,3 +59,49 @@
    (= (c1 :colour) :trump) true
    :else false))
 
+(defn value-of
+  "Return the number of points a card grants"
+  [card]
+  (if (= :trump (card :colour))
+    (if (oudler? card)
+      4.5
+      0.5)
+    (condp = (card :rank)
+      14 4.5 ; king
+      13 3.5 ; queen
+      12 2.5 ; knight
+      11 1.5 ; jack
+      0.5)))
+
+
+;; Basic functions for manipulating list of cards
+
+(defn gen-cards
+  "Generate a list with all possible cards"
+  []
+  (into
+   (for [c [:diamond :heart :spade :club]
+         r (range 1 15)]
+     {:rank r :colour c})
+   (for [r (range 22)]
+     {:rank r :colour :trump})))
+
+(defn nb-oudlers
+  "Returns the number of oudlers in the coll"
+  [hand]
+  (count (filter oudler? hand)))
+
+(defn required-score
+  "Returns the required score to win"
+  [stack]
+  (condp = (nb-oudlers stack)
+    0 56
+    1 51
+    2 41
+    3 36
+    (throw (Exception. "Impossible number of oudlers"))))
+
+(defn total-value 
+  "Returns the total values of cards in a list"
+  [coll]
+  (apply + (map value-of coll)))
