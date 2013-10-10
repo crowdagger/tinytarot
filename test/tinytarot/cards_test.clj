@@ -90,3 +90,36 @@
   (testing "Checks that total value of all cards is 91"
     (is (= 91.0 (total-value (gen-cards))))))
 
+(deftest test-best
+  (testing "Checks that we effectively get the cards that wins"
+    (let [h3 {:rank 3 :colour :heart}
+          h7 {:rank 7 :colour :heart}
+          c5 {:rank 5 :colour :club}
+          t2 {:rank 2 :colour :trump}]
+      (is (= h7 (best-card [h3 h7 c5])))
+      (is (= t2 (best-card [h3 t2 c5])))
+      (is (= c5 (best-card [c5 h3 h7]))))))
+
+(deftest test-playable
+  (testing "Checks that playable? algorithm is ok"
+    (let [h3 {:rank 3 :colour :heart}
+          h7 {:rank 7 :colour :heart}
+          c5 {:rank 5 :colour :club}
+          t2 {:rank 2 :colour :trump}
+          t3 {:rank 3 :colour :trump}
+          all-trumps (for [r (range 1 15)]
+                       {:rank r :colour :trump})
+          all-diamonds (for [r (range 1 14)]
+                         {:rank r :colour :diamond})]
+      (is (false? (playable? {:rank 2 :colour :heart}
+                             [{:rank 2 :colour :heart}
+                              h7
+                              t2]
+                             [c5 t3])))
+      
+      (is (true? (playable? {:colour :diamond :rank 3}
+                            all-diamonds
+                            [t2 t3])))
+      (is (false? (playable? t2
+                             [t2 t3 {:colour :trump :rank 21}]
+                             [{:colour :trump :rank 9}]))))))

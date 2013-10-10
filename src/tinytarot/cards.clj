@@ -105,3 +105,52 @@
   "Returns the total values of cards in a list"
   [coll]
   (apply + (map value-of coll)))
+
+(defn total-score
+  "Returns the score at the end of a game"
+  [coll]
+  (- (total-value coll)
+     (required-score coll)))
+
+(defn best-card
+  "Returns the best card of two, or of a coll"
+  ([c1 c2]
+     (if (better-than? c2 c1)
+       c2
+       c1))
+  ([coll]
+     (if (= 1 (count coll))
+       (first coll)
+       (reduce best-card coll))))
+
+(defn playable?
+  "Returns true if a card is playable given hand and already played cards"
+  [card hand played]
+  (let [played (remove excuse? played)]
+    (cond 
+     (excuse? card) true ; if excuse, always ok
+     (empty? played) true ; no cards played, always ok
+     (and (= (:colour card) (:colour (first played))) 
+          (not= (:colour card) :trump)) true ; same colour, ok      
+     (and (not= (:colour card) (:colour (first played)))
+          (seq (filter 
+                #(= (:colour %) (:colour (first played)))
+                hand))) true ; different colour and colour in hand, wrong
+     (and (not= (:colour card) (:colour (first played)))
+          (seq (filter 
+                #(= (:colour %) :trump)
+                hand))) false ; different colour and trump in hand, wrong
+     (better-than? card (best-card played)) 4 ; going up, ok
+     (empty? (filter #(better-than? % (best-card played))
+                  hand)) true ; no playable card in hand, ok
+     :else false))) 
+
+
+
+
+
+
+
+
+
+
