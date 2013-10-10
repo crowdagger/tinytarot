@@ -1,4 +1,4 @@
-(ns tnt-clj.core)
+(ns tinytarot.core)
 
 (defn foo
   "I don't do a whole lot."
