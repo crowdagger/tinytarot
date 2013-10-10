@@ -71,15 +71,22 @@
     (is (= 0.5 (value-of {:rank 12 :colour :trump})))
     (is (= 4.5 (value-of {:rank 0 :colour :trump})))))
 
+(deftest test-gen-cards
+  (testing "Checks that there are 78 unique cards"
+    (is (= 78 (count (gen-cards))))
+    (is (= 78 (count (into #{} (gen-cards)))))))
+
+(deftest test-nb-oudlers
+  (testing "Checks that there are 3 oudlers in the game"
+    (is (= 3 (nb-oudlers (gen-cards))))))
+
 (deftest test-total-value
   (testing "Checks that total value of cards is correct"
     (is (= 10.0
            (total-value [{:rank 3 :colour :heart}
                          {:rank 21 :colour :trump}
                          {:rank 14 :colour :diamond}
-                         {:rank 2 :colour :diamond}])))))
+                         {:rank 2 :colour :diamond}]))))
+  (testing "Checks that total value of all cards is 91"
+    (is (= 91.0 (total-value (gen-cards))))))
 
-(deftest test-gen-cards
-  (testing "Checks that there are 78 unique cards"
-    (is (= 78 (count (gen-cards))))
-    (is (= 78 (count (into #{} (gen-cards)))))))
